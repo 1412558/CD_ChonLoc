@@ -1,0 +1,9 @@
+C:\Users\Kuga\Desktop\CD_HTTT\Model\bin\Debug\Model.exe.config
+C:\Users\Kuga\Desktop\CD_HTTT\Model\bin\Debug\Model.exe
+C:\Users\Kuga\Desktop\CD_HTTT\Model\bin\Debug\Model.pdb
+C:\Users\Kuga\Desktop\CD_HTTT\Model\obj\Debug\Model.csprojResolveAssemblyReference.cache
+C:\Users\Kuga\Desktop\CD_HTTT\Model\obj\Debug\Model.exe
+C:\Users\Kuga\Desktop\CD_HTTT\Model\obj\Debug\Model.pdb
+C:\Users\Kuga\Desktop\CD_ChonLoc\Model\bin\Debug\Model.exe.config
+C:\Users\Kuga\Desktop\CD_ChonLoc\Model\obj\Debug\Model.exe
+C:\Users\Kuga\Desktop\CD_ChonLoc\Model\obj\Debug\Model.pdb

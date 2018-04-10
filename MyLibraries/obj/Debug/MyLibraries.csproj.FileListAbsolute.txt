@@ -1,0 +1,7 @@
+C:\Users\Kuga\Desktop\CD_HTTT\MyLibraries\bin\Debug\MyLibraries.exe.config
+C:\Users\Kuga\Desktop\CD_HTTT\MyLibraries\bin\Debug\MyLibraries.exe
+C:\Users\Kuga\Desktop\CD_HTTT\MyLibraries\bin\Debug\MyLibraries.pdb
+C:\Users\Kuga\Desktop\CD_HTTT\MyLibraries\bin\Debug\StemmersNet.dll
+C:\Users\Kuga\Desktop\CD_HTTT\MyLibraries\obj\Debug\MyLibraries.csprojResolveAssemblyReference.cache
+C:\Users\Kuga\Desktop\CD_HTTT\MyLibraries\obj\Debug\MyLibraries.exe
+C:\Users\Kuga\Desktop\CD_HTTT\MyLibraries\obj\Debug\MyLibraries.pdb
