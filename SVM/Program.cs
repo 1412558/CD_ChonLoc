@@ -61,7 +61,7 @@ namespace SVM
             {
                 int rs = this.Predict_ReturnInt(text);
                 result.Add(rs);
-                //streamWriter.WriteLine( rs + ", " + text);
+                streamWriter.WriteLine( rs + "," + text);
             }
 
 
@@ -91,15 +91,15 @@ namespace SVM
             double Fmacro = (2 * Pmacro * Rmacro) / (Pmacro + Rmacro);
             double Fmicro = 1.0*total_count_correct / correct_result.Count;
 
-            //for (int i = 0; i < n_class; i++)
-            //{
-            //    streamWriter.WriteLine("P" + i + "=" + "P" + this._predictionDictionary[i] + "=" + PiArr[i]);
-            //    streamWriter.WriteLine("R" + i + "=" + "R" + this._predictionDictionary[i] + "=" + RiArr[i]);
-            //}
-            //streamWriter.WriteLine("Fmacro=" + Fmacro);
-            //streamWriter.WriteLine("Fmicro=" + Fmicro);
+            for (int i = 0; i < n_class; i++)
+            {
+                streamWriter.WriteLine("P" + i + "=" + "P" + this._predictionDictionary[i] + "=" + PiArr[i]);
+                streamWriter.WriteLine("R" + i + "=" + "R" + this._predictionDictionary[i] + "=" + RiArr[i]);
+            }
+            streamWriter.WriteLine("Fmacro=" + Fmacro);
+            streamWriter.WriteLine("Fmicro=" + Fmicro);
 
-            streamWriter.WriteLine(Pmacro +", " + Rmacro + ", " + Fmacro +", " + Fmicro);
+            //streamWriter.WriteLine(Pmacro +", " + Rmacro + ", " + Fmacro +", " + Fmicro);
 
             streamWriter.Close();
             fs.Close();

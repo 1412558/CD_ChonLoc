@@ -26,8 +26,8 @@ namespace KNN
             int Euclid_OR_Cosine = 1; // mặc định tính theo cosine
             if(line != null)
             {
-                k = Int32.Parse(line.Split(',')[0]);
-                Euclid_OR_Cosine = Int32.Parse(line.Split(',')[1]);
+                k = Int32.Parse(line.Split(' ')[0]);
+                Euclid_OR_Cosine = Int32.Parse(line.Split(' ')[1]);
             }
             var list_file_raw = Directory.GetFiles("dir_trainning\\", "*.*", SearchOption.AllDirectories).ToList();
           

@@ -12,5 +12,15 @@ C:\Users\Kuga\Desktop\CD_HTTT\NaiveBayes\obj\Debug\NaiveBayes.csprojResolveAssem
 C:\Users\Kuga\Desktop\CD_HTTT\NaiveBayes\obj\Debug\NaiveBayes.exe
 C:\Users\Kuga\Desktop\CD_HTTT\NaiveBayes\obj\Debug\NaiveBayes.pdb
 C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\NaiveBayes.exe.config
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\NaiveBayes.exe
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\NaiveBayes.pdb
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\Bayes.dll
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\CsvReader.dll
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\MyLibraries.exe
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\Stemmer.dll
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\StemmersNet.dll
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\MyLibraries.pdb
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\bin\Debug\CsvReader.xml
+C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\obj\Debug\NaiveBayes.csprojResolveAssemblyReference.cache
 C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\obj\Debug\NaiveBayes.exe
 C:\Users\Kuga\Desktop\CD_ChonLoc\NaiveBayes\obj\Debug\NaiveBayes.pdb
