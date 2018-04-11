@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Cosine_Similar.cs" />
     <Compile Include="Euclid_Similar.cs" />
+    <Compile Include="PretreatmentData.cs" />
     <Compile Include="Process_Stem_StopWord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

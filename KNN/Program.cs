@@ -30,9 +30,9 @@ namespace KNN
                 Euclid_OR_Cosine = Int32.Parse(line.Split(' ')[1]);
             }
             var list_file_raw = Directory.GetFiles("dir_trainning\\", "*.*", SearchOption.AllDirectories).ToList();
-          
-            program.GetDictionary(list_file_raw);
-            //program.Pretreatment(list_file_raw, "dir_pre\\input_dataCSV.csv");
+
+            Console.WriteLine("Processing GetDictionary...");
+            program.GetDictionary("dir_pre\\dictionary_dataCSV.csv");
 
             Console.WriteLine("Processing getFeature...");
             program.getFeature("dir_pre\\input_trainning_dataCSV.csv");
@@ -245,37 +245,13 @@ namespace KNN
                 this.featureList.Add(fea_idf);
             }
         }
-        public void GetDictionary(List<string> list_file_raw)
+        public void GetDictionary(string path_dictionary_CSV)
         {
-            for (int i = 0; i < list_file_raw.Count; i++)
+            var dataTable = DataAccess.DataTable.New.ReadCsv(path_dictionary_CSV);
+            foreach (var item in dataTable.Rows)
             {
-                string fileName = list_file_raw.ElementAt(i);
-                FileInfo fi = new FileInfo(fileName);
-
-                // i <=> ClassName
-                this._predictionDictionary.Add(i, fi.Name.Split('.')[0]);
+                this._predictionDictionary.Add(Int32.Parse(item["key_class"]), item["name_class"]);
             }
-        }
-        public void Pretreatment(List<string> list_file_raw, string out_path_dataCSV) // process stopword, stem
-        {
-            MyLibraries.Process_Stem_StopWord process_stem_stopWord = new MyLibraries.Process_Stem_StopWord("stopwords.txt");
-            FileStream fs = new FileStream(out_path_dataCSV, FileMode.Create);
-            StreamWriter streamWriter = new StreamWriter(fs);
-            streamWriter.WriteLine("class,text");
-            for (int i = 0; i < list_file_raw.Count; i++)
-            {
-                string fileName = list_file_raw.ElementAt(i);
-                StreamReader streamReader = new StreamReader(fileName);
-                string line = "";
-                while ((line = streamReader.ReadLine()) != null)
-                {
-                    string rs = process_stem_stopWord.process_stopword_stem(line);
-                    streamWriter.WriteLine(i + "," + rs);
-                }
-                streamReader.Close();
-            }
-            streamWriter.Close();
-            fs.Close();
         }
 
         private static IEnumerable<string> GetWords(string x)

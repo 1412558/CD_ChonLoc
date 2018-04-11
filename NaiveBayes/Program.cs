@@ -16,49 +16,78 @@ namespace NaiveBayes
             Program program = new Program();
             FileStream fs = new FileStream("dir_result\\result.txt", FileMode.Create);
             StreamWriter streamWriter = new StreamWriter(fs);
-            var list_file_raw = Directory.GetFiles("dir_trainning\\", "*.*", SearchOption.AllDirectories).ToList();
+            int k = 10;
+            int type = 2;
+            List<string> listTest = new List<string>();
+            List<int> correct_result = new List<int>();
 
-            Console.WriteLine("Processing GetDictionary...");
-            program.GetDictionary(list_file_raw);
-
-            Console.WriteLine("Processing Pretreatment...");
-            //program.Pretreatment(list_file_raw, "dir_pre\\input_dataCSV.csv");
-
-            var dataTable = DataAccess.DataTable.New.ReadCsv("dir_pre\\input_trainning_dataCSV.csv");
-            List<string> x = dataTable.Rows.Select(row => row["text"]).ToList();
-
-            List<string> key_0= new List<string>();
-            List<string> key_1 = new List<string>();
-            foreach(var item in dataTable.Rows)
+            program.GetDictionary("dir_pre\\dictionary_dataCSV.csv");
+            StreamReader streamReader = new StreamReader("config.txt");
+            string line = streamReader.ReadLine();
+            streamReader.Close();
+            if(Int32.Parse(line.Split(' ')[0]) == 1)
             {
-                int key = Int32.Parse(item["class"]);
-                if (key == 0)
-                    key_0.Add(item["text"]);
-                if (key == 1)
-                    key_1.Add(item["text"]);
+                type = 1;
+                k = Int32.Parse(line.Split(' ')[1]);
             }
 
+            // classifier được khởi tạo với tham số là mảng string (tên lớp) => key_class
+            string[] arrClass = new string[program._predictionDictionary.Count];
+            foreach(var key in program._predictionDictionary.Keys)
+            {
+                arrClass[key] = key.ToString();
+            }
+            var classifier = new BayesClassifier(arrClass);
 
-            var classifier = new BayesClassifier("0", "1");
 
-            // Train the key_0 quotes.
-            foreach (var quote in key_0)
-                classifier.Train("0",quote);
+            if(type ==1) // cross-validation
+            {
+                var inputRows = DataAccess.DataTable.New.ReadCsv("dir_pre\\dataCSV.csv").Rows.ToList();
+                int size = inputRows.Count;
+                int n = size / k;
+                Random ran = new Random();
+                // ram dom n phần tử (mỗi pt chỉ vị trí thứ i trong row để test, phần còn lại để trainning)
+                List<Row> test = new List<Row>();
+                for(int i = 0; i<n; i++)
+                {
+                    int j = ran.Next(0, inputRows.Count);
+                    // add row được random vào test, remove row đó khỏi trainning
+                    test.Add(inputRows.ElementAt(j));
+                    inputRows.RemoveAt(j);
+                }
 
-            // Train the key_1 quotes.
-            foreach (var quote in key_1)
-                classifier.Train("1", quote);
+                // trainning
+                foreach (var item in inputRows)
+                {
+                    classifier.Train(item["class"], item["text"]);
+                }
 
-            dataTable = DataAccess.DataTable.New.ReadCsv("dir_pre\\input_test_dataCSV.csv");
-            List<string> listText = dataTable.Rows.Select(row => row["text"]).ToList();
-            List<int> correct_result = dataTable.Rows.Select(row => Int32.Parse(row["class"])).ToList();
-
+                // load Test-data
+                listTest = test.Select(row => row["text"]).ToList();
+                // load Test-result
+                correct_result = test.Select(row => Int32.Parse(row["class"])).ToList();
+            }
+            else if( type == 2)
+            {
+                // trainning data
+                var dataTable = DataAccess.DataTable.New.ReadCsv("dir_pre\\trainning_dataCSV.csv");
+                foreach (var item in dataTable.Rows)
+                {
+                    classifier.Train(item["class"], item["text"]);
+                }
+                dataTable = DataAccess.DataTable.New.ReadCsv("dir_pre\\test_dataCSV.csv");
+                // load Test-data
+                listTest = dataTable.Rows.Select(row => row["text"]).ToList();
+                // load Test-result
+                correct_result = dataTable.Rows.Select(row => Int32.Parse(row["class"])).ToList();
+            }
+            
             List<int> result = new List<int>();
-            foreach (string text in listText)
+            foreach (string text in listTest)
             {
                 string rs = classifier.Classify(text);
                 result.Add(Int32.Parse(rs));
-                streamWriter.WriteLine( rs + ", " + text);
+                streamWriter.WriteLine( rs + "," + text);
             }
 
             int n_class = program._predictionDictionary.Count;
@@ -98,38 +127,13 @@ namespace NaiveBayes
             streamWriter.Close();
             fs.Close();
         }
-
-        public void GetDictionary(List<string> list_file_raw)
+        public void GetDictionary(string path_dictionary_CSV)
         {
-            for (int i = 0; i < list_file_raw.Count; i++)
+            var dataTable = DataAccess.DataTable.New.ReadCsv(path_dictionary_CSV);
+            foreach (var item in dataTable.Rows)
             {
-                string fileName = list_file_raw.ElementAt(i);
-                FileInfo fi = new FileInfo(fileName);
-
-                // i <=> ClassName
-                this._predictionDictionary.Add(i, fi.Name.Split('.')[0]);
+                this._predictionDictionary.Add(Int32.Parse(item["key_class"]), item["name_class"]);
             }
-        }
-        public void Pretreatment(List<string> list_file_raw, string out_path_dataCSV) // process stopword, stem
-        {
-            MyLibraries.Process_Stem_StopWord process_stem_stopWord = new MyLibraries.Process_Stem_StopWord("stopwords.txt");
-            FileStream fs = new FileStream(out_path_dataCSV, FileMode.Create);
-            StreamWriter streamWriter = new StreamWriter(fs);
-            streamWriter.WriteLine("class,text");
-            for (int i = 0; i < list_file_raw.Count; i++)
-            {
-                string fileName = list_file_raw.ElementAt(i);
-                StreamReader streamReader = new StreamReader(fileName);
-                string line = "";
-                while ((line = streamReader.ReadLine()) != null)
-                {
-                    string rs = process_stem_stopWord.process_stopword_stem(line);
-                    streamWriter.WriteLine(i + "," + rs);
-                }
-                streamReader.Close();
-            }
-            streamWriter.Close();
-            fs.Close();
         }
     }
 }

@@ -14,42 +14,23 @@ namespace SVM
     {
         List<string> vocabulary { get; set; }
         C_SVC model { get; set; }
-        TextClassificationProblemBuilder problemBuilder { get; set; }
-        svm_problem problem { get; set; }
         Dictionary<int, string> _predictionDictionary { get; set; } = new Dictionary<int, string>();
 
         static void Main(string[] args)
         {
             Program program = new Program();
-            var list_file_raw = Directory.GetFiles("dir_trainning\\", "*.*", SearchOption.AllDirectories).ToList();
 
             Console.WriteLine("Processing GetDictionary...");
-            program.GetDictionary(list_file_raw);
-
-            Console.WriteLine("Processing Pretreatment...");
-            program.Pretreatment(list_file_raw, "dir_pre\\input_dataCSV.csv");
-
+            program.GetDictionary("dir_pre\\dictionary_dataCSV.csv");
 
             Console.WriteLine("Processing Create_Train_SVMmodel...");
-            program.Create_Train_SVMmodel("dir_pre\\input_trainning_dataCSV.csv", 1);
+            program.Create_Train_SVMmodel("dir_pre\\trainning_dataCSV.csv", 1);
 
             Console.WriteLine("Processing Test");
-            program.Test("dir_pre\\input_test_dataCSV.csv", "dir_result\\result.txt",1);
-
-            //Console.WriteLine("Process completed");
+            program.Test("dir_pre\\test_dataCSV.csv", "dir_result\\result.txt");
         }
-        public void GetDictionary(List<string> list_file_raw)
-        {
-            for (int i = 0; i < list_file_raw.Count; i++)
-            { 
-                string fileName = list_file_raw.ElementAt(i);
-                FileInfo fi = new FileInfo(fileName);
 
-                // i <=> ClassName
-                this._predictionDictionary.Add(i, fi.Name.Split('.')[0]);
-            }
-        }
-        public void Test(string path_dataCSV_test, string pathResult, double C)
+        public void Test(string path_dataCSV_test, string pathResult)
         {    
             FileStream fs = new FileStream(pathResult, FileMode.Create);
             StreamWriter streamWriter = new StreamWriter(fs);
@@ -59,7 +40,7 @@ namespace SVM
             List<int> result = new List<int>();
             foreach (string text in listText)
             {
-                int rs = this.Predict_ReturnInt(text);
+                int rs = this.Predict(text);
                 result.Add(rs);
                 streamWriter.WriteLine( rs + "," + text);
             }
@@ -99,31 +80,17 @@ namespace SVM
             streamWriter.WriteLine("Fmacro=" + Fmacro);
             streamWriter.WriteLine("Fmicro=" + Fmicro);
 
-            //streamWriter.WriteLine(Pmacro +", " + Rmacro + ", " + Fmacro +", " + Fmicro);
-
             streamWriter.Close();
             fs.Close();
         }
-        public void Pretreatment(List<string> list_file_raw, string out_path_dataCSV) // process stopword, stem
+
+        public void GetDictionary(string path_dictionary_CSV)
         {
-            MyLibraries.Process_Stem_StopWord process_stem_stopWord = new MyLibraries.Process_Stem_StopWord("stopwords.txt");
-            FileStream fs = new FileStream(out_path_dataCSV, FileMode.Create);
-            StreamWriter streamWriter = new StreamWriter(fs);
-            streamWriter.WriteLine("class,text");
-            for (int i = 0; i < list_file_raw.Count; i++)
+            var dataTable = DataAccess.DataTable.New.ReadCsv(path_dictionary_CSV);
+            foreach(var item in dataTable.Rows)
             {
-                string fileName = list_file_raw.ElementAt(i);
-                StreamReader streamReader = new StreamReader(fileName);
-                string line = "";
-                while ((line = streamReader.ReadLine()) != null)
-                {
-                    string rs = process_stem_stopWord.process_stopword_stem(line);
-                    streamWriter.WriteLine(i + ","+ rs);
-                }
-                streamReader.Close();
+                this._predictionDictionary.Add(Int32.Parse(item["key_class"]), item["name_class"]);
             }
-            streamWriter.Close();
-            fs.Close();
         }
         public void Create_Train_SVMmodel(string path_dataCSV_trainning, double C)
         {
@@ -132,22 +99,17 @@ namespace SVM
             double[] y = dataTable.Rows.Select(row => double.Parse(row["class"])).ToArray();
             
             vocabulary = x.SelectMany(GetWords).Distinct().OrderBy(word => word).ToList();
-            problemBuilder = new TextClassificationProblemBuilder();
-            problem = problemBuilder.CreateProblem(x, y.ToArray(), vocabulary.ToList());
+            var problemBuilder = new TextClassificationProblemBuilder();
+            var problem = problemBuilder.CreateProblem(x, y.ToArray(), vocabulary.ToList());
             model = new C_SVC(problem, KernelHelper.LinearKernel(),C);
         }
-        public int Predict_ReturnInt(string input)
+        public int Predict(string input)
         {
             var newX = TextClassificationProblemBuilder.CreateNode(input, vocabulary);
             var predictedY = model.Predict(newX);
             return (int)predictedY;
         }
-        public string Predict_ReturnString(string input)
-        {
-            var newX = TextClassificationProblemBuilder.CreateNode(input, vocabulary);
-            var predictedY = model.Predict(newX);
-            return this._predictionDictionary[(int)predictedY];
-        }
+
         private static IEnumerable<string> GetWords(string x)
         {
             return x.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
