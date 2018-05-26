@@ -1,0 +1,7 @@
+what does Gate do? https://www.youtube.com/watch?v=qRQXEe58rJA
+
+slide for gate https://www.slideshare.net/dianamaynard/gate-a-text-analysis-tool-for-social-media
+
+http://www.dcs.shef.ac.uk/~diana/Papers/coling00gate.html
+
+http://www.treselle.com/blog/gate-general-architecture-for-text-engineering/
